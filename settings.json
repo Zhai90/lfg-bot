@@ -1,0 +1,15 @@
+{
+  "ver": "v0.0.1-alpha",
+  "debug": true,
+  "userPreferences": {
+    "embedSettings": {
+      "color": "0xFFA500",
+      "errorColor": "0xff0033",
+      "footer": "Contact zhai_ or s1adeo if you encounter any issues!"
+    },
+    "channels": {
+      "lfg-category": "",
+      "voice-category": ""
+    }
+  }
+}
