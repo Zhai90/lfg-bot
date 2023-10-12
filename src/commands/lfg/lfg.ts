@@ -1,9 +1,11 @@
 import {
   ApplicationCommandOptionType,
   ActionRowBuilder,
-  ButtonBuilder,
   ButtonStyle,
   TextChannel,
+  ComponentType,
+  APIActionRowComponent,
+  APIMessageActionRowComponent,
 } from "discord.js";
 
 import { userPreferences } from "../../../settings.json";
@@ -46,27 +48,21 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
   await interaction.deferReply();
 
   const command = interaction.options.getSubcommand(true);
-  const args =
-    (interaction.options.getChannel("channel") as TextChannel)
+  const args = interaction.options.getChannel("channel") as TextChannel;
 
-  const register = new ButtonBuilder()
-    .setCustomId("registerLfg")
-    .setLabel("Register")
-    .setStyle(ButtonStyle.Secondary)
-    .setEmoji('1155486112916181042')
-
-  const confirm = new ButtonBuilder()
-    .setCustomId("confirmLfg")
-    .setLabel("Confirm")
-    .setStyle(ButtonStyle.Success);
-
-  const cancel = new ButtonBuilder()
-    .setCustomId("cancelLfg")
-    .setLabel("Cancel")
-    .setStyle(ButtonStyle.Danger);
-
-  const lfgRow = new ActionRowBuilder().addComponents(register);
-  const confirmRow = new ActionRowBuilder().addComponents(cancel, confirm);
+  const lfgRow = new ActionRowBuilder({
+    components: [
+      {
+        custom_id: "lfg--register",
+        label: "Register",
+        style: ButtonStyle.Primary,
+        type: ComponentType.Button,
+        emoji: {
+          id: "1155486112916181042"
+        }
+      },
+    ],
+  }) as unknown as APIActionRowComponent<APIMessageActionRowComponent>;
 
   switch (command) {
     case "set":
