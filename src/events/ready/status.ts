@@ -5,7 +5,7 @@ import { debug } from "../../../settings.json";
 import { ActivityType, type Client } from "discord.js";
 import type { CommandKit } from "commandkit";
 
-export default function (
+export default async function (
   c: Client<true>,
   client: Client<true>,
   handler: CommandKit

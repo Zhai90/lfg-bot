@@ -53,14 +53,23 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
   const lfgRow = new ActionRowBuilder({
     components: [
       {
-        custom_id: "lfg--register",
-        label: "Register",
-        style: ButtonStyle.Primary,
+        custom_id: "lfg--comp",
+        label: "Competitive",
+        style: ButtonStyle.Secondary,
         type: ComponentType.Button,
         emoji: {
-          id: "1155486112916181042"
+          id: "1162385762705227876"
         }
       },
+      {
+        custom_id: "lfg--qp",
+        label: "Quick-Play",
+        style: ButtonStyle.Secondary,
+        type: ComponentType.Button,
+        emoji: {
+          id: "1162385750336229396"
+        }
+      }
     ],
   }) as unknown as APIActionRowComponent<APIMessageActionRowComponent>;
 

@@ -1,14 +1,26 @@
-import { ButtonInteraction, ActionRowBuilder, ButtonStyle, ComponentType } from "discord.js";
+import {
+  ActionRowBuilder,
+  ButtonStyle,
+  ComponentType,
+  APIActionRowComponent,
+  APIMessageActionRowComponent,
+} from "discord.js";
 
-import { userPreferences } from "../../../settings.json"
+import { userPreferences } from "../../../settings.json";
 
-export default function (
-    interaction: ButtonInteraction,
-    client: Client<true>,
-    handler: CommandKit
-  ) {
+import type { Client, ModalSubmitInteraction } from "discord.js";
+import type { CommandKit } from "commandkit";
 
-const confirmRow = new ActionRowBuilder({
+export default async function (
+  interaction: ModalSubmitInteraction,
+  client: Client<true>,
+  handler: CommandKit
+) {
+  if (!interaction.isModalSubmit()) return false;
+  if (interaction.customId != "lfg--modalSubmit") return false;
+
+  console.log("test")
+  const confirmRow = new ActionRowBuilder({
     components: [
       {
         custom_id: "lfg--confirm",
@@ -31,7 +43,7 @@ const confirmRow = new ActionRowBuilder({
     embeds: [
       {
         color: parseInt(userPreferences.embedSettings.color),
-        title: "Confirm",
+        title: "Confirm?",
         author: {
           name: "Overwatch 2",
           icon_url: "",
@@ -48,4 +60,5 @@ Confirm your request.
     ],
     components: [confirmRow],
     ephemeral: true,
-  });}
+  });
+}
