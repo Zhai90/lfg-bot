@@ -20,6 +20,7 @@ import type {
   APIActionRowComponent,
   APIMessageActionRowComponent,
   ModalActionRowComponentBuilder,
+  TextChannel,
 } from "discord.js";
 
 export const data: CommandData = {
@@ -428,6 +429,87 @@ export async function run({ interaction, client }: SlashCommandProps) {
       ],
       components: [confirmRow],
     });
+
+    const submit = await res.awaitMessageComponent({
+      filter: collectFilter,
+      componentType: ComponentType.Button,
+      time: 60000,
+    });
+
+    if (submit.customId == "lfg--confirm") {
+      await interaction.editReply({
+        embeds: [
+          {
+            color: parseInt(userPreferences.embedSettings.color),
+            title: "Register LFG",
+            author: {
+              name: interaction.user.username,
+              icon_url: interaction.user.displayAvatarURL(),
+            },
+            description: `
+          Succesfully sent! You will get a DM mentioning whether your data gets approved by our staff team.
+          `,
+            timestamp: new Date().toISOString(),
+            image: {
+              url: data.proof,
+            },
+            footer: {
+              text: userPreferences.embedSettings.footer,
+              icon_url: interaction.guild?.iconURL() || undefined,
+            },
+          },
+        ],
+      });
+      await (client.channels.cache.get(userPreferences.channels.lfgApps) as TextChannel).send({ embeds: [
+        {
+          color: parseInt(userPreferences.embedSettings.color),
+          title: data.userID,
+          author: {
+            name: interaction.user.username,
+            icon_url: interaction.user.displayAvatarURL(),
+          },
+          description: `
+        OW Username: \`${data.username}\`
+        OW Region: \`${data.region}\`
+        OW Rank: \`${data.rank}\`
+        `,
+          timestamp: new Date().toISOString(),
+          image: {
+            url: data.proof,
+          },
+          footer: {
+            text: userPreferences.embedSettings.footer,
+            icon_url: interaction.guild?.iconURL() || undefined,
+          },
+        },
+      ] })
+    } else if (submit.customId == "lfg--cancel") {
+      await interaction.editReply({
+        embeds: [
+          {
+            color: parseInt(userPreferences.embedSettings.color),
+            title: "Register LFG",
+            author: {
+              name: interaction.user.username,
+              icon_url: interaction.user.displayAvatarURL(),
+            },
+            description: `
+          Request cancelled. None of your data has been recorded. Please re-run the command if this was a mistake.
+          `,
+            timestamp: new Date().toISOString(),
+            image: {
+              url: data.proof,
+            },
+            footer: {
+              text: userPreferences.embedSettings.footer,
+              icon_url: interaction.guild?.iconURL() || undefined,
+            },
+          },
+        ],
+      });
+
+      return;
+    }
   } catch (error) {
     await interaction.editReply({
       embeds: [
@@ -454,8 +536,6 @@ export async function run({ interaction, client }: SlashCommandProps) {
       components: [],
     });
   }
-
-  console.log(data);
 }
 
 //  Code for when Discord supports select menus in modals (discord pls i swear)

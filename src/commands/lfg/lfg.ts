@@ -8,7 +8,9 @@ import {
   APIMessageActionRowComponent,
 } from "discord.js";
 
-import { userPreferences } from "../../../settings.json";
+import fs from "fs"
+
+import settings, { userPreferences } from "../../../settings.json";
 
 import type {
   CommandData,
@@ -22,14 +24,34 @@ export const data: CommandData = {
   options: [
     {
       name: "set",
-      description: "Set the channel where people will sign up for LFG.",
-      type: ApplicationCommandOptionType.Subcommand,
+      description: "Change settings.",
+      type: ApplicationCommandOptionType.SubcommandGroup,
       options: [
         {
           name: "channel",
-          description: "The channel to send the message to.",
-          type: ApplicationCommandOptionType.Channel,
-          required: true,
+          description: "Change the LFG channel.",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "value",
+              description: "The channel to send the message to.",
+              type: ApplicationCommandOptionType.Channel,
+              required: true,
+            },
+          ],
+        },
+        {
+          name: "apps",
+          description: "Change the review channel.",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "value",
+              description: "The review channel.",
+              type: ApplicationCommandOptionType.Channel,
+              required: true,
+            },
+          ],
         },
       ],
     },
@@ -41,14 +63,14 @@ export const options: CommandOptions = {
   guildOnly: true,
   userPermissions: [],
   botPermissions: [],
-  deleted: false,
+  deleted: false
 };
 
 export async function run({ interaction, client, handler }: SlashCommandProps) {
   await interaction.deferReply();
 
   const command = interaction.options.getSubcommand(true);
-  const args = interaction.options.getChannel("channel") as TextChannel;
+  const args = interaction.options.getChannel("value") as TextChannel;
 
   const lfgRow = new ActionRowBuilder({
     components: [
@@ -58,8 +80,8 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
         style: ButtonStyle.Secondary,
         type: ComponentType.Button,
         emoji: {
-          id: "1162385762705227876"
-        }
+          id: "1162385762705227876",
+        },
       },
       {
         custom_id: "lfg--qp",
@@ -67,14 +89,14 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
         style: ButtonStyle.Secondary,
         type: ComponentType.Button,
         emoji: {
-          id: "1162385750336229396"
-        }
-      }
+          id: "1162385750336229396",
+        },
+      },
     ],
   }) as unknown as APIActionRowComponent<APIMessageActionRowComponent>;
 
   switch (command) {
-    case "set":
+    case "channel":
       await interaction.editReply({
         embeds: [
           {
@@ -115,6 +137,34 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
           },
         ],
         components: [lfgRow],
+      });
+      break;
+    case "apps":
+      userPreferences.channels.lfgApps = args.id;
+      fs.writeFile("./settings.json", JSON.stringify(settings, null, 2), () => {
+        (err: unknown) => {
+          if (err) console.log(err);
+        };
+      });
+      await interaction.editReply({
+        embeds: [
+          {
+            color: parseInt(userPreferences.embedSettings.color),
+            title: "Channel Set",
+            author: {
+              name: interaction.user.username,
+              icon_url: interaction.user.displayAvatarURL(),
+            },
+            description: `
+        The LFG review channel is now <#${args.id}>
+        `,
+            timestamp: new Date().toISOString(),
+            footer: {
+              text: userPreferences.embedSettings.footer,
+              icon_url: interaction.guild?.iconURL() || undefined,
+            },
+          },
+        ],
       });
       break;
   }

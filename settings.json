@@ -8,8 +8,9 @@
       "footer": "Contact zhai_ or s1adeo if you encounter any issues!"
     },
     "channels": {
-      "lfg-category": "",
-      "voice-category": ""
+      "lfgCategory": "",
+      "voiceCategory": "",
+      "lfgApps": "1158819066920849521"
     }
   }
 }
