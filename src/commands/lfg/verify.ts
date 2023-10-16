@@ -5,6 +5,9 @@ import {
   ModalBuilder,
   ButtonStyle,
 } from "discord.js";
+
+import isValidURL from "../../utils/isValidURL";
+
 import { userPreferences } from "../../../settings.json";
 
 import type {
@@ -42,6 +45,7 @@ export async function run({ interaction, client }: SlashCommandProps) {
     platform: "",
     rank: "",
     username: "",
+    proof: "",
   };
 
   const firstRow = new ActionRowBuilder({
@@ -53,15 +57,15 @@ export async function run({ interaction, client }: SlashCommandProps) {
         options: [
           {
             label: "America",
-            value: "1",
+            value: "America",
           },
           {
             label: "Europe",
-            value: "2",
+            value: "Europe",
           },
           {
             label: "Asia",
-            value: "3",
+            value: "Asia",
           },
         ],
       },
@@ -77,11 +81,11 @@ export async function run({ interaction, client }: SlashCommandProps) {
         options: [
           {
             label: "PC",
-            value: "1",
+            value: "PC",
           },
           {
             label: "Console",
-            value: "2",
+            value: "Console",
           },
         ],
       },
@@ -97,35 +101,35 @@ export async function run({ interaction, client }: SlashCommandProps) {
         options: [
           {
             label: "Bronze",
-            value: "1",
+            value: "Bronze",
           },
           {
             label: "Silver",
-            value: "2",
+            value: "Silver",
           },
           {
             label: "Gold",
-            value: "3",
+            value: "Gold",
           },
           {
             label: "Platinum",
-            value: "4",
+            value: "Platinum",
           },
           {
             label: "Diamond",
-            value: "5",
+            value: "Diamond",
           },
           {
             label: "Master",
-            value: "6",
+            value: "Master",
           },
           {
             label: "Grandmaster",
-            value: "7",
+            value: "Grandmaster",
           },
           {
             label: "Top 500",
-            value: "8",
+            value: "Top 500",
           },
         ],
       },
@@ -187,160 +191,271 @@ export async function run({ interaction, client }: SlashCommandProps) {
     components: [firstRow],
   });
 
-  const region = await res.awaitMessageComponent({
-    filter: collectFilter,
-    componentType: ComponentType.StringSelect,
-    time: 300000,
-  });
+  try {
+    const region = await res.awaitMessageComponent({
+      filter: collectFilter,
+      componentType: ComponentType.StringSelect,
+      time: 60000,
+    });
 
-  data = {
-    ...data,
-    region: region.values.join(""),
-  };
+    data = {
+      ...data,
+      region: region.values.join(""),
+    };
 
-  await interaction.editReply({
-    embeds: [
-      {
-        color: parseInt(userPreferences.embedSettings.color),
-        title: "Register LFG",
-        author: {
-          name: interaction.user.username,
-          icon_url: interaction.user.displayAvatarURL(),
-        },
-        description: `
-    Please answer the following questions.
-
-    Region: ${data.region}
-    Platform: 
-    Rank:
-    Username:
-    `,
-        timestamp: new Date().toISOString(),
-        footer: {
-          text: userPreferences.embedSettings.footer,
-          icon_url: interaction.guild?.iconURL() || undefined,
-        },
-      },
-    ],
-    components: [secondRow],
-  });
-
-  const platform = await res.awaitMessageComponent({
-    filter: collectFilter,
-    componentType: ComponentType.StringSelect,
-    time: 300000,
-  });
-
-  data = {
-    ...data,
-    platform: platform.values.join(""),
-  };
-
-  await interaction.editReply({
-    embeds: [
-      {
-        color: parseInt(userPreferences.embedSettings.color),
-        title: "Register LFG",
-        author: {
-          name: interaction.user.username,
-          icon_url: interaction.user.displayAvatarURL(),
-        },
-        description: `
-    Please answer the following questions.
-
-    Region: ${data.region}
-    Platform: ${data.platform}
-    Rank: 
-    Username:
-    `,
-        timestamp: new Date().toISOString(),
-        footer: {
-          text: userPreferences.embedSettings.footer,
-          icon_url: interaction.guild?.iconURL() || undefined,
-        },
-      },
-    ],
-    components: [thirdRow],
-  });
-
-  const rank = await res.awaitMessageComponent({
-    filter: collectFilter,
-    componentType: ComponentType.StringSelect,
-    time: 300000,
-  });
-
-  data = {
-    ...data,
-    rank: rank.values.join(""),
-  };
-
-  await interaction.editReply({
-    embeds: [
-      {
-        color: parseInt(userPreferences.embedSettings.color),
-        title: "Register LFG",
-        author: {
-          name: interaction.user.username,
-          icon_url: interaction.user.displayAvatarURL(),
-        },
-        description: `
+    await interaction.editReply({
+      embeds: [
+        {
+          color: parseInt(userPreferences.embedSettings.color),
+          title: "Register LFG",
+          author: {
+            name: interaction.user.username,
+            icon_url: interaction.user.displayAvatarURL(),
+          },
+          description: `
       Please answer the following questions.
+  
+      Region: ${data.region}
+      Platform: 
+      Rank:
+      Username:
+      `,
+          timestamp: new Date().toISOString(),
+          footer: {
+            text: userPreferences.embedSettings.footer,
+            icon_url: interaction.guild?.iconURL() || undefined,
+          },
+        },
+      ],
+      components: [secondRow],
+    });
 
+    const platform = await res.awaitMessageComponent({
+      filter: collectFilter,
+      componentType: ComponentType.StringSelect,
+      time: 60000,
+    });
+
+    data = {
+      ...data,
+      platform: platform.values.join(""),
+    };
+
+    await interaction.editReply({
+      embeds: [
+        {
+          color: parseInt(userPreferences.embedSettings.color),
+          title: "Register LFG",
+          author: {
+            name: interaction.user.username,
+            icon_url: interaction.user.displayAvatarURL(),
+          },
+          description: `
+      Please answer the following questions.
+  
       Region: ${data.region}
       Platform: ${data.platform}
-      Rank: ${data.rank}
-      Username: (type your username)
+      Rank: 
+      Username:
       `,
-        timestamp: new Date().toISOString(),
-        footer: {
-          text: userPreferences.embedSettings.footer,
-          icon_url: interaction.guild?.iconURL() || undefined,
+          timestamp: new Date().toISOString(),
+          footer: {
+            text: userPreferences.embedSettings.footer,
+            icon_url: interaction.guild?.iconURL() || undefined,
+          },
         },
-      },
-    ],
-    components: [],
-  });
+      ],
+      components: [thirdRow],
+    });
 
-  const username = await interaction.channel.awaitMessages({
-    filter: msgFilter,
-    max: 1,
-    time: 30000,
-    errors: ["time"],
-  });
+    const rank = await res.awaitMessageComponent({
+      filter: collectFilter,
+      componentType: ComponentType.StringSelect,
+      time: 60000,
+    });
 
-  await username.first()?.delete();
+    data = {
+      ...data,
+      rank: rank.values.join(""),
+    };
 
-  data = {
-    ...data,
-    username: username.first()?.content || "",
-  };
-
-  await interaction.editReply({
-    embeds: [
-      {
-        color: parseInt(userPreferences.embedSettings.color),
-        title: "Register LFG",
-        author: {
-          name: interaction.user.username,
-          icon_url: interaction.user.displayAvatarURL(),
+    await interaction.editReply({
+      embeds: [
+        {
+          color: parseInt(userPreferences.embedSettings.color),
+          title: "Register LFG",
+          author: {
+            name: interaction.user.username,
+            icon_url: interaction.user.displayAvatarURL(),
+          },
+          description: `
+        Please answer the following questions.
+  
+        Region: ${data.region}
+        Platform: ${data.platform}
+        Rank: ${data.rank}
+        Username: (type your username)
+        `,
+          timestamp: new Date().toISOString(),
+          footer: {
+            text: userPreferences.embedSettings.footer,
+            icon_url: interaction.guild?.iconURL() || undefined,
+          },
         },
-        description: `
-      Are these correct?
+      ],
+      components: [],
+    });
 
-      Region: ${data.region}
-      Platform: ${data.platform}
-      Rank: ${data.rank}
-      Username: ${data.username}
-      `,
-        timestamp: new Date().toISOString(),
-        footer: {
-          text: userPreferences.embedSettings.footer,
-          icon_url: interaction.guild?.iconURL() || undefined,
+    const username = await interaction.channel.awaitMessages({
+      filter: msgFilter,
+      max: 1,
+      time: 60000,
+      errors: ["time"],
+    });
+
+    await username.first()?.delete();
+
+    data = {
+      ...data,
+      username: username.first()?.content || "",
+    };
+
+    await interaction.editReply({
+      embeds: [
+        {
+          color: parseInt(userPreferences.embedSettings.color),
+          title: "Register LFG",
+          author: {
+            name: interaction.user.username,
+            icon_url: interaction.user.displayAvatarURL(),
+          },
+          description: `
+        Please attach an image to prove your rank.
+        Make sure it's a fullscreen screenshot of your overview.
+  
+        Region: ${data.region}
+        Platform: ${data.platform}
+        Rank: ${data.rank}
+        Username: ${data.username}
+        `,
+          timestamp: new Date().toISOString(),
+          footer: {
+            text: userPreferences.embedSettings.footer,
+            icon_url: interaction.guild?.iconURL() || undefined,
+          },
         },
-      },
-    ],
-    components: [confirmRow],
-  });
+      ],
+      components: [],
+    });
+
+    const proof = await interaction.channel.awaitMessages({
+      filter: msgFilter,
+      max: 1,
+      time: 60000,
+      errors: ["time"],
+    });
+
+    proof.first()?.delete();
+
+    let proofURL =
+      proof.first()?.attachments.first()?.url || proof.first()?.content;
+
+    if (
+      !proof.first()?.attachments.first()?.url &&
+      !isValidURL(proof.first()?.content)
+    ) {
+      await interaction.editReply({
+        embeds: [
+          {
+            color: parseInt(userPreferences.embedSettings.color),
+            title: "Register LFG",
+            author: {
+              name: interaction.user.username,
+              icon_url: interaction.user.displayAvatarURL(),
+            },
+            description: `
+          Invalid attachment. Please try re-run the command.
+          `,
+            timestamp: new Date().toISOString(),
+            image: {
+              url: data.proof,
+            },
+            footer: {
+              text: userPreferences.embedSettings.footer,
+              icon_url: interaction.guild?.iconURL() || undefined,
+            },
+          },
+        ],
+        components: [],
+      });
+
+      return;
+    }
+
+    data = {
+      ...data,
+      proof: proofURL || "",
+    };
+
+    await interaction.editReply({
+      embeds: [
+        {
+          color: parseInt(userPreferences.embedSettings.color),
+          title: "Register LFG",
+          author: {
+            name: interaction.user.username,
+            icon_url: interaction.user.displayAvatarURL(),
+          },
+          description: `
+        Are you sure you want to submit your data for review?
+  
+        Region: ${data.region}
+        Platform: ${data.platform}
+        Rank: ${data.rank}
+        Username: ${data.username}
+  
+        Proof:
+        `,
+          timestamp: new Date().toISOString(),
+          image: {
+            url: data.proof,
+          },
+          footer: {
+            text: userPreferences.embedSettings.footer,
+            icon_url: interaction.guild?.iconURL() || undefined,
+          },
+        },
+      ],
+      components: [confirmRow],
+    });
+  } catch (error) {
+    await interaction.editReply({
+      embeds: [
+        {
+          color: parseInt(userPreferences.embedSettings.errorColor),
+          title: "Register LFG",
+          author: {
+            name: interaction.user.username,
+            icon_url: interaction.user.displayAvatarURL(),
+          },
+          description: `
+        Timed out. Please try again.
+        `,
+          timestamp: new Date().toISOString(),
+          image: {
+            url: data.proof,
+          },
+          footer: {
+            text: userPreferences.embedSettings.footer,
+            icon_url: interaction.guild?.iconURL() || undefined,
+          },
+        },
+      ],
+      components: [],
+    });
+  }
+
+  console.log(data);
 }
 
 //  Code for when Discord supports select menus in modals (discord pls i swear)
