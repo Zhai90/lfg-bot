@@ -31,9 +31,9 @@ export async function run({ interaction, client }: SlashCommandProps) {
           icon_url: client.user.displayAvatarURL(),
         },
         description: `
-        A Discord bot built in TypeScript with Discord.JS using CommandKit, love, and lots of tea (and coffee) by <@360235359746916352> for <@309414891419074561>!
+        A Discord bot built in TypeScript with Discord.JS using CommandKit, love, and lots of coffee (and tea) by <@360235359746916352> for <@309414891419074561>!
 
-        Check out the bot's [source code](https://www.github.com/Zhai90/README)!
+        Check out the bot's [source code](https://github.com/Zhai90/lfg-bot)!
 
         **Stats:**
         CPU Usage: \`SYS: ${process.cpuUsage().system}μs / USR: ${
@@ -42,9 +42,6 @@ export async function run({ interaction, client }: SlashCommandProps) {
         Uptime: \`${Math.floor(process.uptime())}s\`
         API Latency: \`${client.ws.ping}ms\`
         `,
-        image: {
-          url: "https://i.imgur.com/AfFp7pu.png",
-        },
         timestamp: new Date().toISOString(),
         footer: {
           text: userPreferences.embedSettings.footer,

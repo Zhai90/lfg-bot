@@ -190,7 +190,7 @@ export async function run({ interaction, client }: SlashCommandProps) {
           description: `
     Please answer the following questions.
 
-    Username: (type your username)
+    Username: (type your BNET username#tag)
     Rank:
     Platform:
     Region:
