@@ -8,7 +8,7 @@ import {
   APIMessageActionRowComponent,
 } from "discord.js";
 
-import fs from "fs"
+import fs from "fs";
 
 import settings, { userPreferences } from "../../../settings.json";
 
@@ -63,7 +63,7 @@ export const options: CommandOptions = {
   guildOnly: true,
   userPermissions: [],
   botPermissions: [],
-  deleted: false
+  deleted: false,
 };
 
 export async function run({ interaction, client, handler }: SlashCommandProps) {
@@ -158,6 +158,26 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
             description: `
         The LFG review channel is now <#${args.id}>
         `,
+            timestamp: new Date().toISOString(),
+            footer: {
+              text: userPreferences.embedSettings.footer,
+              icon_url: interaction.guild?.iconURL() || undefined,
+            },
+          },
+        ],
+      });
+      await args.send({
+        embeds: [
+          {
+            color: parseInt(userPreferences.embedSettings.color),
+            title: "This channel has been set for reviews!",
+            author: {
+              name: interaction.user.username,
+              icon_url: interaction.user.displayAvatarURL(),
+            },
+            description: `
+      Feel free to delete this message.
+      `,
             timestamp: new Date().toISOString(),
             footer: {
               text: userPreferences.embedSettings.footer,

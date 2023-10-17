@@ -16,8 +16,8 @@ export default async function (
   client: Client<true>,
   handler: CommandKit
 ) {
-  if (!interaction.isModalSubmit()) return false;
-  if (interaction.customId != "lfg--modalSubmit") return false;
+  if (!interaction.isModalSubmit()) return;
+  if (interaction.customId != "lfg--modalSubmit") return;
 
   console.log("test")
   const confirmRow = new ActionRowBuilder({

@@ -21,34 +21,28 @@ export default async function (
   client: Client<true>,
   handler: CommandKit
 ) {
-  
+  if (interaction.customId != "lfg--comp") return;
+  await interaction.reply({
+    embeds: [
+      {
+        color: parseInt(userPreferences.embedSettings.errorColor),
+        title: "Cannot Register",
+        author: {
+          name: interaction.user.username,
+          icon_url: interaction.user.displayAvatarURL(),
+        },
+        description: `
+  Please run the /verify command in order to register for competitive LFG.
+  `,
+        timestamp: new Date().toISOString(),
+        footer: {
+          text: userPreferences.embedSettings.footer,
+          icon_url: interaction.guild?.iconURL() || undefined,
+        },
+      },
+    ],
+    ephemeral: true,
+  });
 
-    // interaction.showModal(usernameModal);
-
-    // const username = await interaction.awaitModalSubmit({ time: 60_000, filter: collectFilter })
-
-    // console.log(username)
-
-    //     console.log("test2");
-    //     await interaction.editReply({
-    //       embeds: [
-    //         {
-    //           color: parseInt(userPreferences.embedSettings.errorColor),
-    //           title: "Timed out.",
-    //           author: {
-    //             name: "Overwatch 2",
-    //             icon_url: "",
-    //           },
-    //           description: `
-    // Please try again.
-    // `,
-    //           timestamp: new Date().toISOString(),
-    //           footer: {
-    //             text: userPreferences.embedSettings.footer,
-    //             icon_url: interaction.guild?.iconURL() || undefined,
-    //           },
-    //         },
-    //       ],
-    //     });
-  }
-
+  return;
+}

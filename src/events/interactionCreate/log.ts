@@ -9,7 +9,7 @@ export default async function (
   client: Client<true>,
   handler: CommandKit
 ) {
-  if (!debug) return false;
+  if (!debug) return;
   console.log(
     chalk.dim(
       `🐞 | "${interaction.user.username}" (${interaction.user.id}) has executed the command "${interaction.commandName}" in ${interaction.guild?.name}.`
